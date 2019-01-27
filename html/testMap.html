@@ -1,8 +1,5 @@
 <html lang="en">
     <head>
-         <script src='https://api.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
-        <link href='https://api.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
-
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
         integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
         crossorigin=""/>
@@ -11,8 +8,11 @@
         integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
         crossorigin=""></script>
 
+        <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
+        <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
+
         <title>
-            Hackathon tests
+            Hackathon map
         </title>
     </head>
 
@@ -21,6 +21,13 @@
         <script>
             var mymap = L.map('mapid').setView([51.505, -0.09], 13).resize(10);
         </script> -->
+
+        <style>
+        .mapboxgl-popup {
+            max-width: 400px;
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+        }
+        </style>
         
         <div id='map' style='width: 100%; height: 100%;'></div>
         <script>
@@ -29,31 +36,684 @@
             //     container: 'map',
             //     style: 'mapbox://styles/mapbox/streets-v11',
             // });
-            var mymap = L.map('map').locate({setView: true, maxZoom: 16});
+            // var mymap = L.map('map').setView([0,50]);
             // L.tileLayer(mapbox).addTo(mymap);
 
-            L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-                maxZoom: 18,
-                id: 'mapbox.streets',
-                accessToken: 'pk.eyJ1IjoidHJleWZlciIsImEiOiJjanJlZ29zdmUwc2ZjNDRyc3FiYXkzYjZkIn0.HdRNojX0dWmc9E6eIGBKwA'
-            }).addTo(mymap);
+            mapboxgl.accessToken = 'pk.eyJ1IjoidHJleWZlciIsImEiOiJjanJlZ29zdmUwc2ZjNDRyc3FiYXkzYjZkIn0.HdRNojX0dWmc9E6eIGBKwA';
+            
+            var map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/light-v9',
+                zoom: 4,
+                attributionControl: false,
+                center: [-95.7129, 38.0902]
+            }).addControl(
+                new mapboxgl.ScaleControl({
+                    maxWidth: 150,
+                    unit: 'imperial'
+                })
+            ).addControl(
+                new mapboxgl.GeolocateControl({
+                    positionOptions: {
+                        enableHighAccuracy: false
+                    },
+                    trackUserLocation: true
+                })
+            ).addControl(
+                new mapboxgl.NavigationControl(), 'top-left'
+            ) .addControl(
+                new mapboxgl.AttributionControl({
+                    compact: true
+                })
+            );
 
-            var myIcon = L.icon({
-                iconUrl: 'https://img.icons8.com/windows/64/000000/street-view.png',
-                iconSize: [64, 64],
-                iconAnchor: [21, 0],
-                popupAnchor: [10, 0]
+            map.on('load', function () {
+                // Add a layer showing the places.
+                map.addLayer({
+                    "id": "places",
+                    "type": "symbol",
+                    "source": {
+                        "type": "geojson",
+                        "data": {
+                            "type": "FeatureCollection",
+                            "features": [{
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Acadia</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-68.21, 44.35]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>American Samoa</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-170.68, -14.25]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Arches</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-109.57, 38.68]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Badlands</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-102.50, 43.75]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Big Bend</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-103.25, 29.25]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Biscayne</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-80.08, 25.65]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Black Canyon of the Gunnison</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-107.72, 38.57]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Bryce Canyon</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-112.18, 37.57]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Canyonlands</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-109.93, 38.2]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Capitol Reef</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-111.17, 38.20]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Carlsbad Caverns</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-104.44, 32.17]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Channel Islands</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-119.42, 34.01]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Congaree</strong>",
+                                    "icon": "dot.png"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-80.78, 33.78]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Crater Lake</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-122.1, 42.94]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Cuyahoga Valley</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-81.55, 41.24]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Death Valley</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-116.82, 36.24]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Denali</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-150.50, 63.33]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Dry Tortugas</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-82.87, 24.63]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Everglades</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-80.93, 25.32]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Gates of the Arctic</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-153.30, 67.78]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Gateway Arch</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-90.19, 38.63]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Glacier</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-114.00, 48.80]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Glacier Bay</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-137.00, 58.50]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Grand Canyon</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-112.14, 36.06]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Grand Teton</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-110.80, 43.73]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Great Basin</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-114.30, 38.98]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Great Sand Dunes</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-105.51, 37.73]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Great Smoky Mountains</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-83.53, 35.68]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Guadalupe Mountains</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-104.87, 31.92]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Haleakala</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-156.17, 20.72]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Hawaii Volcanoes</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-155.20, 19.38]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Hot Springs</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-93.05, 34.51]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Isle Royale</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-88.55, 48.10]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Joshua Tree</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-115.90, 33.79]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Katmai</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-155.00, 58.50]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Kenai Fjords</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-149.65, 59.92]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Kings Canyon</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-118.55, 36.80]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Kobuk Valley</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-159.28, 67.55]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Lake Clark</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-153.42, 60.97]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Lassen Volcanic</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-121.51, 40.49]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Mammoth Cave</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-86.10, 37.18]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Mesa Verde</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-108.49, 37.18]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Mount Rainier</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-121.75, 46.85]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>North Cascades</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-121.20, 48.70]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Olympic</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-123.50, 47.97]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Pertified Forest</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-109.78, 35.07]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Pinncales</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-121.16, 36.48]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Redwood</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-124.00, 41.30]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Rocky Mountains</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-105.58, 40.40]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Saguaro</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-110.50, 32.25]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Sequoia</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-118.68, 36.43]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Shenandoah</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-78.35, 38.53]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Theodore Roosevelt</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-103.45, 46.97]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Voyageurs</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-92.88, 48.50]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Wind Cave</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-103.48, 43.57]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Wrangell - St. Elias</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-142.00, 61.00]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Yellowstone</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-110.50, 44.60]
+                                }
+                            }, {
+                                "type": "Feature",
+                                "properties": {
+                                    "description": "<strong>Yosemite</strong>",
+                                    "icon": "theatre"
+                                },
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [-119.50, 37.83]
+                                }
+                            }]
+                        }
+                    },
+                    "layout": {
+                        "icon-image": "{icon}-15",
+                        "icon-allow-overlap": true
+                    }
+                });
+
+                // When a click event occurs on a feature in the places layer, open a popup at the
+                // location of the feature, with description HTML from its properties.
+                map.on('click', 'places', function (e) {
+                    var coordinates = e.features[0].geometry.coordinates.slice();
+                    var description = e.features[0].properties.description;
+
+                    // Ensure that if the map is zoomed out such that multiple
+                    // copies of the feature are visible, the popup appears
+                    // over the copy being pointed to.
+                    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                    }
+
+                    new mapboxgl.Popup()
+                        .setLngLat(coordinates)
+                        .setHTML(description)
+                        .addTo(map);
+                });
+
+                // Change the cursor to a pointer when the mouse is over the places layer.
+                map.on('mouseenter', 'places', function () {
+                    map.getCanvas().style.cursor = 'pointer';
+                });
+
+                // Change it back to a pointer when it leaves.
+                map.on('mouseleave', 'places', function () {
+                    map.getCanvas().style.cursor = '';
+                });
             });
+        // Ensure that if the map is zoomed out such that multiple
+ 
+            //L.tileLayer(lemap).addTo(mymap);
 
-            var marker = L.marker(
-                [44.35, -68.21], {
-                icon: myIcon
-            }).addTo(mymap);
+            // var myIcon = L.icon({
+            //     iconUrl: 'https://img.icons8.com/windows/64/000000/street-view.png',
+            //     iconSize: [64, 64],
+            //     iconAnchor: [21, 0],
+            //     popupAnchor: [10, 0]
+            // });
 
-            marker.bindPopup("<b>Acadia National Park</b><br>$373 American Airlines").openPopup();
+            // var marker = L.marker(
+            //     [44.35, -68.21], {
+            //     icon: myIcon
+            // }).addTo(mymap);
+
+            // marker.bindPopup("<b>Acadia National Park</b><br>$373 American Airlines").openPopup();
 
         </script>
+
     </body>
 
     
