@@ -1,0 +1,60 @@
+<html lang="en">
+    <head>
+         <script src='https://api.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.js'></script>
+        <link href='https://api.mapbox.com/mapbox-gl-js/v0.52.0/mapbox-gl.css' rel='stylesheet' />
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+        integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+        crossorigin=""/>
+
+        <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+        integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+        crossorigin=""></script>
+
+        <title>
+            Hackathon tests
+        </title>
+    </head>
+
+    <body>
+        <!-- <dev id="mapid"></dev>
+        <script>
+            var mymap = L.map('mapid').setView([51.505, -0.09], 13).resize(10);
+        </script> -->
+        
+        <div id='map' style='width: 100%; height: 100%;'></div>
+        <script>
+            // mapboxgl.accessToken = 'pk.eyJ1IjoidHJleWZlciIsImEiOiJjanJlZ29zdmUwc2ZjNDRyc3FiYXkzYjZkIn0.HdRNojX0dWmc9E6eIGBKwA';
+            // var mapbox = new mapboxgl.Map({
+            //     container: 'map',
+            //     style: 'mapbox://styles/mapbox/streets-v11',
+            // });
+            var mymap = L.map('map').locate({setView: true, maxZoom: 16});
+            // L.tileLayer(mapbox).addTo(mymap);
+
+            L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                maxZoom: 18,
+                id: 'mapbox.streets',
+                accessToken: 'pk.eyJ1IjoidHJleWZlciIsImEiOiJjanJlZ29zdmUwc2ZjNDRyc3FiYXkzYjZkIn0.HdRNojX0dWmc9E6eIGBKwA'
+            }).addTo(mymap);
+
+            var myIcon = L.icon({
+                iconUrl: 'https://img.icons8.com/windows/64/000000/street-view.png',
+                iconSize: [64, 64],
+                iconAnchor: [21, 0],
+                popupAnchor: [10, 0]
+            });
+
+            var marker = L.marker(
+                [44.35, -68.21], {
+                icon: myIcon
+            }).addTo(mymap);
+
+            marker.bindPopup("<b>Acadia National Park</b><br>$373 American Airlines").openPopup();
+
+        </script>
+    </body>
+
+    
+</html>
