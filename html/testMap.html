@@ -68,6 +68,10 @@
             );
 
             map.on('load', function () {
+                map.loadImage("https://i.imgur.com/JlQrMJe.png", 
+                function(error, image) {
+                if (error) throw error;
+                map.addImage("custom-marker", image);
                 // Add a layer showing the places.
                 map.addLayer({
                     "id": "places",
@@ -559,7 +563,7 @@
                             }, {
                                 "type": "Feature",
                                 "properties": {
-                                    "description": "<strong>Rocky Mountains</strong>",
+                                    "description": "<strong>Rocky Mountains</strong><br><img src='https://i.imgur.com/3DcV4vO.jpg' width=100%>",
                                     "icon": "theatre"
                                 },
                                 "geometry": {
@@ -660,27 +664,30 @@
                         }
                     },
                     "layout": {
-                        "icon-image": "{icon}-15",
-                        "icon-allow-overlap": true
+                        "icon-image": "custom-marker",
+                        "icon-size": 0.1
                     }
+                });
                 });
 
                 // When a click event occurs on a feature in the places layer, open a popup at the
                 // location of the feature, with description HTML from its properties.
                 map.on('click', 'places', function (e) {
+                    map.flyTo({center: e.features[0].geometry.coordinates});
+                    
                     var coordinates = e.features[0].geometry.coordinates.slice();
                     var description = e.features[0].properties.description;
 
                     // Ensure that if the map is zoomed out such that multiple
                     // copies of the feature are visible, the popup appears
                     // over the copy being pointed to.
-                    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-                    }
+                    // while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                    //     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                    // }
 
                     new mapboxgl.Popup()
                         .setLngLat(coordinates)
-                        .setHTML(description)
+                        .setHTML('<center><h2>'+description+'</h2><br><iframe src=popup.html></iframe></center>')
                         .addTo(map);
                 });
 
@@ -697,11 +704,11 @@
         // Ensure that if the map is zoomed out such that multiple
  
             //L.tileLayer(lemap).addTo(mymap);
-
+            e
             // var myIcon = L.icon({
             //     iconUrl: 'https://img.icons8.com/windows/64/000000/street-view.png',
             //     iconSize: [64, 64],
-            //     iconAnchor: [21, 0],
+            //     iconAnchor: [21, 0],e
             //     popupAnchor: [10, 0]
             // });
 
