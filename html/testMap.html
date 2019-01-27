@@ -563,7 +563,7 @@
                             }, {
                                 "type": "Feature",
                                 "properties": {
-                                    "description": "<strong>Rocky Mountains</strong><br><img src='https://i.imgur.com/3DcV4vO.jpg' width=100%>",
+                                    "description": "<strong>Rocky Mountains</strong><hr><img src='https://i.imgur.com/3DcV4vO.jpg' width=100%>",
                                     "icon": "theatre"
                                 },
                                 "geometry": {
@@ -687,7 +687,8 @@
 
                     new mapboxgl.Popup()
                         .setLngLat(coordinates)
-                        .setHTML('<center><h2>'+description+'</h2><br><iframe src=popup.html></iframe></center>')
+                        .setHTML('<body><center><h2>'+description+'</h2><br><iframe src=popup.html></iframe></center></body>')
+                        //.className('popup.css')
                         .addTo(map);
                 });
 
